@@ -152,7 +152,6 @@ namespace TextRPG
                 {
                     case ConsoleKey.D1:
                         player1.Heal();
-
                         break;
                     case ConsoleKey.D2:
                         break;
