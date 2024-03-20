@@ -1,12 +1,17 @@
 ﻿using System;
+using System.Threading;
 
 class Player
 {//멤버변수는 무조건 프라이빗
-   protected string Name = "플레이어";
+    protected string Name = "플레이어";
     protected int AT = 20;
     protected int HP = 50;
     protected int MAXHP = 100;
 
+    public int GetAttackStrength()
+    {
+        return AT;
+    }
 
     public void Status()
     {
@@ -22,8 +27,8 @@ class Player
         Console.WriteLine(MAXHP);
         Console.WriteLine("----------------------------------------");
     }
-   
-    
+
+
     public void PrintHP()
     {
         Console.WriteLine("");
@@ -42,7 +47,7 @@ class Player
             Console.ReadKey();
         }
         else
-        {
+        {//-------------이부분은 수정이 조금 필요하다
             Console.WriteLine("체력이 부족합니다 체력을 치료하시오");
             this.HP = MAXHP;
             PrintHP();
@@ -51,18 +56,94 @@ class Player
         return;
 
     }
+    public void Upgrade()
+    {
+        if (AT >= 20)
+        {
+            AT += 10;
+            Console.WriteLine("공격력이 " + AT + "이 되었습니다");
+            Console.ReadKey();
+        }
+        if (AT >= 100)
+        {
+            AT -= 10;
+            Console.WriteLine("공격력이 이미 최대치입니다");
+            Console.ReadKey();
+        }
+        return;
+    }
     public bool IsDeath()
     {
         return HP <= 0;
     }
+    // 플레이어가 데미지를 받는 메서드
+    public void Damage(int damage)
+    {
+        Console.Write(Name);
+        Console.WriteLine("가 " + damage + "의 데미지를 입었습니다.");
+        HP -= damage;
+        if (HP < 0) HP = 0; // 체력이 음수가 되지 않도록 처리
+    }
 }
+
+
+class Enemy
+{//멤버변수는 무조건 프라이빗
+    protected string Name = "적";
+    protected int AT = 30;
+    protected int HP = 100;
+    protected int MAXHP = 100;
+
+    public int getAttack()
+    {
+        return AT;
+    }
+    public void SetName(string name)
+    {
+        name = name.ToLower();
+    }
+
+    public void Status()
+    {
+        Console.Write(Name);
+        Console.WriteLine("의 능력치--------------------------------");
+        Console.Write("공격력: ");
+        Console.WriteLine(AT);
+
+
+        Console.Write("체력: ");
+        Console.Write(HP);
+        Console.Write("/");
+        Console.WriteLine(MAXHP);
+        Console.WriteLine("----------------------------------------");
+    }
+
+    public bool IsDeath()
+    {
+        return HP <= 0;
+    }
+    // 적이 데미지를 받는 메서드
+    public void Damage(int damage)
+    {
+        Console.Write(Name);
+        Console.WriteLine("이 " + damage + "의 데미지를 입었습니다.");
+        HP -= damage;
+        if (HP < 0) HP = 0; // 체력이 음수가 되지 않도록 처리
+    }
+}
+
+
 class Monster
 {
     protected string Name = "몬스터";
     protected int AT = 10;
-    protected int HP = 50;
+    protected int HP = 150;
     protected int MAXHP = 150;
 
+    public int getAttack()
+    {
+        return AT;
+    }
     public bool IsDeath()
     {
         return HP <= 0;
@@ -84,6 +165,13 @@ class Monster
         Console.Write("/");
         Console.WriteLine(MAXHP);
         Console.WriteLine("----------------------------------------");
+    }
+    public void Damage(int damage)
+    {
+        Console.Write(Name);
+        Console.WriteLine("가 " + damage + "의 데미지를 입었습니다.");
+        HP -= damage;
+        if (HP < 0) HP = 0; // 몬스터의 체력이 음수가 되지 않도록 처리
     }
 }
 //에러나 잘못된선택에 관한것도 만든다
@@ -135,7 +223,7 @@ namespace TextRPG
 
 
         }
-        static void Town(Player player1)
+        static SELECTION_TYPE Town(Player player1)
         {
             while (true)
             {
@@ -154,26 +242,112 @@ namespace TextRPG
                         player1.Heal();
                         break;
                     case ConsoleKey.D2:
+                        player1.Upgrade();
                         break;
                     case ConsoleKey.D3:
-                        return;
+                        return SELECTION_TYPE.NONE_TYPE;
                     default:
                         break;
                 }
             }
         }
-       
+        static SELECTION_TYPE FightMonster(Player player, Monster monster)
+        {
+            Random random = new Random();
 
-        static void Battle(Player player2)
+            while (!monster.IsDeath() && !player.IsDeath())
+            {
+                Console.Clear();
+                player.Status();
+                monster.Status();
+
+                
+
+                if (!monster.IsDeath())
+                {
+                    // 플레이어가 몬스터를 랜덤한 데미지로 공격
+                    int damageToMonster = random.Next(1, player.GetAttackStrength() + 1);
+                    Console.WriteLine("플레이어가 몬스터에게 " + damageToMonster + "의 데미지를 줍니다.");
+                    monster.Damage(damageToMonster);
+                    Console.WriteLine("");
+                    // 몬스터가 플레이어를 랜덤한 데미지로 공격
+                    int damageToPlayer = random.Next(1, monster.getAttack() + 1);
+                    Console.WriteLine("몬스터가 플레이어에게 " + damageToPlayer + "의 데미지를 줍니다.");
+                    player.Damage(damageToPlayer);
+                }
+
+                if (player.IsDeath() || monster.IsDeath())
+                {
+                    Console.WriteLine("배틀이 종료 되었습니다");
+                    if (monster.IsDeath())
+                    {
+                        Console.WriteLine("플레이어가 승리했습니다");
+                    }
+                    else
+                    {
+                        Console.WriteLine("몬스터가 승리했습니다");
+                    }
+                    Console.ReadKey();
+                    return SELECTION_TYPE.TOWN;
+                }
+                Thread.Sleep(1000);
+            }
+            return SELECTION_TYPE.NONE_TYPE;
+        }
+
+        static SELECTION_TYPE FightEnemy(Player player, Enemy enemy)
+        {
+            Random random = new Random();
+
+            while (!enemy.IsDeath() && !player.IsDeath())
+            {
+                Console.Clear();
+                player.Status();
+                enemy.Status();
+
+
+
+                if (!enemy.IsDeath())
+                {
+                    // 플레이어가 몬스터를 랜덤한 데미지로 공격
+                    int damageToenemy = random.Next(1, player.GetAttackStrength() + 1);
+                    Console.WriteLine("플레이어가 적에게 " + damageToenemy + "의 데미지를 줍니다.");
+                    enemy.Damage(damageToenemy);
+                    Console.WriteLine("");
+                    // 몬스터가 플레이어를 랜덤한 데미지로 공격
+                    int damageToPlayer = random.Next(1, enemy.getAttack() + 1);
+                    Console.WriteLine("적이 플레이어에게 " + damageToPlayer + "의 데미지를 줍니다.");
+                    player.Damage(damageToPlayer);
+                }
+
+                if (player.IsDeath() || enemy.IsDeath())
+                {
+                    Console.WriteLine("배틀이 종료 되었습니다");
+                    if (enemy.IsDeath())
+                    {
+                        Console.WriteLine("플레이어가 승리했습니다");
+                    }
+                    else
+                    {
+                        Console.WriteLine("적이 승리했습니다");
+                    }
+                    Console.ReadKey();
+                    return SELECTION_TYPE.TOWN;
+                }
+                Thread.Sleep(1000);//속도 조절하는 매서드
+            }
+            return SELECTION_TYPE.NONE_TYPE;
+        }
+
+        static SELECTION_TYPE Battle(Player player2)
         {
             Monster Newmonster = new Monster();
-            while (Newmonster.IsDeath() || player2.IsDeath())
+            Enemy enemy = new Enemy();  
+            while (false == Newmonster.IsDeath() && false == player2.IsDeath())
             {
                 Console.Clear();
                 player2.Status();
-                Console.WriteLine("");
-                Newmonster.Status();
-                Console.ReadKey();
+
 
                 Console.WriteLine("전쟁터에서 무슨일을 하시겠습니까?");
                 Console.WriteLine("1.플레이어와 싸운다");
@@ -185,17 +359,26 @@ namespace TextRPG
                 switch (ckl)//Console.ReadKey().Key;
                 {
                     case ConsoleKey.D1:
-
+                        FightEnemy(player2, enemy);
                         break;
                     case ConsoleKey.D2:
+                        FightMonster(player2, Newmonster);
                         break;
                     case ConsoleKey.D3:
-                        return;
+                        return SELECTION_TYPE.NONE_TYPE;
                     default:
                         break;
                 }
 
             }
+            if(!player2.IsDeath())
+            {
+                return SELECTION_TYPE.BATTLE;
+            }if(player2.IsDeath())
+            {
+            return SELECTION_TYPE.TOWN;
+            }
+            return SELECTION_TYPE.NONE_TYPE;
         }
 
 
@@ -206,18 +389,21 @@ namespace TextRPG
 
             //외부에서 쓰게할려면 1.static 2.인스턴스 값 지정
             Player Newplayer = new Player();
+            SELECTION_TYPE seleckCheck = SELECTION_TYPE.NONE_TYPE;
             while (true)
             {
-                SELECTION_TYPE seleckCheck = StartSelect();
+
                 switch (seleckCheck)
                 {
+
                     case SELECTION_TYPE.TOWN:
-                        Town(Newplayer);
+                        seleckCheck = Town(Newplayer);
                         break;
                     case SELECTION_TYPE.BATTLE:
-                        Battle(Newplayer);
+                        seleckCheck = Battle(Newplayer);
                         break;
                     case SELECTION_TYPE.NONE_TYPE:
+                        seleckCheck = StartSelect();
                         break;
                     default:
                         break;

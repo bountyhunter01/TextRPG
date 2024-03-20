@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TextRPG", "TextRPG\TextRPG.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inheritance_RPG", "Inheritance_RPG\Inheritance_RPG.csproj", "{84333B35-6DC8-4D23-9252-5612AD6E8DB7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MorePratial", "Moreleture\MorePratial.csproj", "{F2F0C18D-661F-4797-8B4B-0C5063AB704F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{84333B35-6DC8-4D23-9252-5612AD6E8DB7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{84333B35-6DC8-4D23-9252-5612AD6E8DB7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{84333B35-6DC8-4D23-9252-5612AD6E8DB7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2F0C18D-661F-4797-8B4B-0C5063AB704F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2F0C18D-661F-4797-8B4B-0C5063AB704F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2F0C18D-661F-4797-8B4B-0C5063AB704F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2F0C18D-661F-4797-8B4B-0C5063AB704F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
