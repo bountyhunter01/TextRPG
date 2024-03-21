@@ -1,0 +1,7 @@
+C:\Users\a\source\c#\TextRPG\Inventory\bin\Debug\Inventory.exe.config
+C:\Users\a\source\c#\TextRPG\Inventory\bin\Debug\Inventory.exe
+C:\Users\a\source\c#\TextRPG\Inventory\bin\Debug\Inventory.pdb
+C:\Users\a\source\c#\TextRPG\Inventory\obj\Debug\Inventory.csproj.AssemblyReference.cache
+C:\Users\a\source\c#\TextRPG\Inventory\obj\Debug\Inventory.csproj.CoreCompileInputs.cache
+C:\Users\a\source\c#\TextRPG\Inventory\obj\Debug\Inventory.exe
+C:\Users\a\source\c#\TextRPG\Inventory\obj\Debug\Inventory.pdb
